@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Production & Build outputs
+dist/
+dist-ssr/
+*.local
+
+# Vite cache
+.vite/
+
+# Environment files (keeps .env.example tracked)
+.env
+.env*.local
+.env.development
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Temporary / Dot files
+.*.swp
+.package-lock.json
