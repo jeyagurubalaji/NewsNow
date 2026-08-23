@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-900 text-ink-text font-body antialiased transition-colors duration-300;
+  }
+
+  body.light {
+    @apply bg-paper-50 text-paper-text;
+  }
+
+  ::selection {
+    @apply bg-amber/30;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.amber.DEFAULT');
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-700 rounded-full;
+  }
+  body.light ::-webkit-scrollbar-thumb {
+    @apply bg-paper-border;
+  }
+}
+
+@layer components {
+  .dateline {
+    @apply font-mono text-[11px] uppercase tracking-wire text-amber;
+  }
+
+  .dateline-muted {
+    @apply font-mono text-[11px] uppercase tracking-wire text-ink-muted;
+  }
+  body.light .dateline-muted {
+    @apply text-paper-muted;
+  }
+
+  .panel {
+    @apply bg-ink-800 border border-ink-border rounded-md;
+  }
+  body.light .panel {
+    @apply bg-paper-100 border-paper-border;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm bg-amber text-ink-950 font-mono text-xs uppercase tracking-wire font-semibold px-4 py-2.5 transition hover:bg-amber-dim active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-ink-border text-ink-text font-mono text-xs uppercase tracking-wire px-4 py-2.5 transition hover:border-amber hover:text-amber disabled:opacity-50 disabled:pointer-events-none;
+  }
+  body.light .btn-ghost {
+    @apply border-paper-border text-paper-text hover:border-amber-dim hover:text-amber-dim;
+  }
+
+  .input-field {
+    @apply w-full bg-ink-900 border border-ink-border rounded-sm px-3 py-2.5 text-sm text-ink-text placeholder:text-ink-muted focus:border-amber outline-none transition;
+  }
+  body.light .input-field {
+    @apply bg-paper-100 border-paper-border text-paper-text placeholder:text-paper-muted;
+  }
+
+  .header-bar {
+    @apply bg-ink-900/95;
+  }
+  body.light .header-bar {
+    @apply bg-paper-50/95;
+  }
+
+  .hover-row {
+    @apply hover:bg-ink-700;
+  }
+  body.light .hover-row {
+    @apply hover:bg-paper-border;
+  }
+
+  .divider {
+    @apply border-ink-border;
+  }
+  body.light .divider {
+    @apply border-paper-border;
+  }
+
+  .text-muted {
+    @apply text-ink-muted;
+  }
+  body.light .text-muted {
+    @apply text-paper-muted;
+  }
+
+  .text-body {
+    @apply text-ink-text;
+  }
+  body.light .text-body {
+    @apply text-paper-text;
+  }
+
+  .surface {
+    @apply bg-ink-700;
+  }
+  body.light .surface {
+    @apply bg-paper-border;
+  }
+}
