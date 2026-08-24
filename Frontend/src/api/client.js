@@ -27,7 +27,7 @@ const processQueue = (error, token = null) => {
   pendingQueue = []
 }
 
-// On 401, try to refresh the access token once, then retry the original request
+// On 401, try to refresh the access token once, then retry the original request.
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
