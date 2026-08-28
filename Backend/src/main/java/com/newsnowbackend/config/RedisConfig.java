@@ -1,8 +1,5 @@
 package com.newsnowbackend.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +8,8 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
@@ -24,38 +21,38 @@ import java.util.Map;
 public class RedisConfig {
 
     @Bean
-    public ObjectMapper redisObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance,
-                ObjectMapper.DefaultTyping.NON_FINAL);
-        return mapper;
+    public RedisSerializer<Object> redisSerializer() {
+        return RedisSerializer.json();
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory,
+                                                       RedisSerializer<Object> redisSerializer) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(redisObjectMapper()));
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(redisObjectMapper()));
+
+        StringRedisSerializer stringSerializer = new StringRedisSerializer();
+
+        template.setKeySerializer(stringSerializer);
+        template.setValueSerializer(redisSerializer);
+        template.setHashKeySerializer(stringSerializer);
+        template.setHashValueSerializer(redisSerializer);
+
         template.afterPropertiesSet();
         return template;
     }
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory,
+                                     RedisSerializer<Object> redisSerializer) {
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(15))
                 .disableCachingNullValues()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair
-                        .fromSerializer(new GenericJackson2JsonRedisSerializer(redisObjectMapper())));
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer));
 
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
-        // Headlines refresh often -> shorter TTL
         cacheConfigs.put("headlines", defaultConfig.entryTtl(Duration.ofMinutes(10)));
-        // Country/category/language lists rarely change -> long TTL
         cacheConfigs.put("staticLists", defaultConfig.entryTtl(Duration.ofHours(24)));
         cacheConfigs.put("search", defaultConfig.entryTtl(Duration.ofMinutes(5)));
 
