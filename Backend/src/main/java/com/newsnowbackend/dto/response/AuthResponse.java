@@ -13,5 +13,5 @@ public class AuthResponse {
     private String accessToken;
     private String refreshToken;
     private String tokenType;
-    private com.newsnow.dto.response.UserResponse user;
+    private com.newsnowbackend.dto.response.UserResponse user;
 }
