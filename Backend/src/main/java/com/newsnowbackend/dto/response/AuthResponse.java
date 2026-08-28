@@ -1,4 +1,4 @@
-package com.newsnow.dto.response;
+package com.newsnowbackend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +13,5 @@ public class AuthResponse {
     private String accessToken;
     private String refreshToken;
     private String tokenType;
-    private UserResponse user;
+    private com.newsnow.dto.response.UserResponse user;
 }
