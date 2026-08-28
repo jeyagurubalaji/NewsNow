@@ -1,0 +1,87 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: newsnowbackend
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/newsnow}
+
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 5000
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 900000 # 15 minutes default TTL
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope:
+              - email
+              - profile
+
+  jackson:
+    default-property-inclusion: non_null
+
+# JWT configuration
+jwt:
+  secret: ${JWT_SECRET:change-this-to-a-long-random-secret-key-at-least-256-bits-please}
+  access-token-expiration-ms: ${JWT_ACCESS_EXPIRATION:3600000}      # 1 hour
+  refresh-token-expiration-ms: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 days
+
+# News provider configuration (newsdata.io)
+newsapi:
+  provider: newsdata
+  base-url: https://newsdata.io/api/1
+  api-key: ${NEWSDATA_API_KEY:}
+  # A second, optional fallback provider (gnews / newsapi.org) can be wired in similarly
+  fallback:
+    enabled: ${NEWS_FALLBACK_ENABLED:false}
+    base-url: https://gnews.io/api/v4
+    api-key: ${GNEWS_API_KEY:}
+
+# Scheduler configuration
+scheduler:
+  enabled: ${SCHEDULER_ENABLED:true}
+  # Cron: every 30 minutes
+  refresh-cron: ${NEWS_REFRESH_CRON:0 */30 * * * *}
+  # How many countries to refresh per scheduler tick (rotation batch, to respect API rate limits)
+  batch-size: ${SCHEDULER_BATCH_SIZE:15}
+
+# CORS
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
+
+# AI summary microservice (optional Python/FastAPI service)
+ai:
+  summary:
+    enabled: ${AI_SUMMARY_ENABLED:false}
+    base-url: ${AI_SUMMARY_URL:http://localhost:8000}
+
+# Breaking-news heuristic (see BreakingNewsDetector) - no provider flags this for us
+breaking:
+  detection:
+    window-minutes: ${BREAKING_WINDOW_MINUTES:45}
+
+# Firebase Cloud Messaging - breaking-news push notifications to mobile/web clients.
+# Get a service account key from Firebase Console > Project Settings > Service Accounts,
+# save the JSON file somewhere the app can read, and point FCM_SERVICE_ACCOUNT_PATH at it.
+fcm:
+  enabled: ${FCM_ENABLED:false}
+  service-account-path: ${FCM_SERVICE_ACCOUNT_PATH:}
+
+logging:
+  level:
+    com.newsnow: INFO
+    org.springframework.security: WARN
