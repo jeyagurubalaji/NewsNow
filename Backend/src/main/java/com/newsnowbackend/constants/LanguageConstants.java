@@ -1,4 +1,4 @@
-package com.newsnow.constants;
+package com.newsnowbackend.constants;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
